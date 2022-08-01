@@ -1,0 +1,149 @@
+﻿<Window
+    x:Class="OptimizedTreeView.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behavior="clr-namespace:OptimizedTreeView.Common"
+    xmlns:convert="clr-namespace:OptimizedTreeView.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:OptimizedTreeView.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="user"
+    Title="MainView"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+
+        <convert:TreeViewLineConverter x:Key="LineConverter" />
+
+        <ContextMenu x:Key="menu">
+            <MenuItem
+                Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                CommandParameter="{Binding}"
+                Header="添加子节点" />
+            <MenuItem
+                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                CommandParameter="{Binding}"
+                Header="删除节点" />
+            <MenuItem
+                Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                CommandParameter="{Binding}"
+                Header="修改节点" />
+        </ContextMenu>
+
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid
+                            Width="15"
+                            Height="13"
+                            SnapsToDevicePixels="True">
+                            <Rectangle
+                                Width="9"
+                                Height="9"
+                                SnapsToDevicePixels="true"
+                                Stroke="#919191">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,2">
+                                        <GradientStop Offset="0" Color="White" />
+                                        <GradientStop Offset="0.5" Color="Silver" />
+                                        <GradientStop Offset="1" Color="LightGray" />
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle
+                                x:Name="ExpandPath"
+                                Width="1"
+                                Height="5"
+                                SnapsToDevicePixels="true"
+                                Stroke="Black" />
+                            <Rectangle
+                                Width="5"
+                                Height="1"
+                                SnapsToDevicePixels="true"
+                                Stroke="Black" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ExpandPath" Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="40" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="5" Orientation="Horizontal">
+            <Button
+                Width="100"
+                Height="30"
+                Command="{Binding AddCommand}"
+                Content="添加" />
+
+        </StackPanel>
+
+        <TextBox
+            x:Name="search"
+            Grid.Row="1"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding DataContext.SearchCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" CommandParameter="{Binding ElementName=search, Path=Text}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBox>
+
+        <TreeView
+            x:Name="treeView"
+            Grid.Row="2"
+            AllowDrop="True"
+            ItemsSource="{Binding TreeModel.Children}">
+            <i:Interaction.Behaviors>
+                <behavior:DragDropBehavior />
+            </i:Interaction.Behaviors>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <Grid>
+                        <TextBox
+                            x:Name="textBox"
+                            Text="{Binding Name}"
+                            Visibility="{Binding IsTextBoxVisibility}">
+                            <TextBox.InputBindings>
+                                <KeyBinding
+                                    Key="Enter"
+                                    Command="{Binding DataContext.UpdateCommand, RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}}"
+                                    CommandParameter="{Binding ElementName=textBox, Path=Text}" />
+                            </TextBox.InputBindings>
+                        </TextBox>
+                        <TextBlock Text="{Binding Name}" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="ContextMenu" Value="{StaticResource menu}" />
+                    <Setter Property="Visibility" Value="{Binding IsNodeVisibility}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="SkyBlue" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</Window>
