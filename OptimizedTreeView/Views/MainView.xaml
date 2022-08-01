@@ -17,7 +17,8 @@
     <Window.Resources>
 
         <convert:TreeViewLineConverter x:Key="LineConverter" />
-        <convert:VisibilityToVisibilityConverter x:Key="VisibilityConverter"/>
+        <convert:VisibilityToVisibilityConverter x:Key="VisibilityConverter" />
+        <convert:ItemSourceToVisibilityConverter x:Key="ItemSourceConverter" />
 
         <ContextMenu x:Key="menu">
             <MenuItem
@@ -108,6 +109,12 @@
             </i:Interaction.Triggers>
         </TextBox>
 
+        <TextBlock
+            Grid.Row="2"
+            Panel.ZIndex="1"
+            Text="{Binding TreeModel.Name}"
+            Visibility="{Binding TreeModel.Children.Count, Converter={StaticResource ItemSourceConverter}}" />
+
         <TreeView
             x:Name="treeView"
             Grid.Row="2"
@@ -130,7 +137,7 @@
                                     CommandParameter="{Binding ElementName=textBox, Path=Text}" />
                             </TextBox.InputBindings>
                         </TextBox>
-                        <TextBlock Text="{Binding Name}" Visibility="{Binding IsTextBoxVisibility, Converter={StaticResource VisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Name}" Visibility="{Binding IsTextBoxVisibility, Converter={StaticResource VisibilityConverter}}" />
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

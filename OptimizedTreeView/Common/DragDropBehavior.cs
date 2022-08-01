@@ -25,6 +25,7 @@ namespace OptimizedTreeView.Common
         Point startPoint;
         bool isDragging = false;
         TreeViewItem selectItem;
+        bool flag;
 
         private void PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -79,17 +80,33 @@ namespace OptimizedTreeView.Common
                 {
                     var result = (TreeViewModel)selectItem.DataContext;
 
-                    if (targetItem.Id == result.Parent.Id || targetItem.Equals(result))
+                    if (targetItem.NodeType == Enums.TreeNodeType.Children && result.NodeType == Enums.TreeNodeType.Root)
                     {
                         isDragging = false;
                         e.Effects = DragDropEffects.Move;
                         return;
                     }
+                    else if (targetItem.NodeType == Enums.TreeNodeType.Root && result.NodeType == Enums.TreeNodeType.Root)
+                    {
+                        vm.DeleteCommand.Execute((TreeViewModel)selectItem.DataContext);
+                        result.Parent = targetItem;
+                        targetItem.Children.Add(result);
+
+                        e.Effects = DragDropEffects.Move;
+                        isDragging = false;
+                        return;
+                    }
+                    else if (targetItem.Id == result.Parent.Id || targetItem.Equals(result))
+                    {
+                        isDragging = false;
+                        e.Effects = DragDropEffects.Move;
+                        return;
+                    }
+
                     vm.DeleteCommand.Execute((TreeViewModel)selectItem.DataContext);
                     result.Parent = targetItem;
                     targetItem.Children.Add(result);
 
-                    //targetItem.Parent.Children.Add((TreeViewModel)data);
                     e.Effects = DragDropEffects.Move;
                 }
             }

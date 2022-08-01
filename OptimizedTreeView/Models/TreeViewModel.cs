@@ -7,12 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using OptimizedTreeView.Common;
+using OptimizedTreeView.Enums;
 
 namespace OptimizedTreeView.Models
 {
     public class TreeViewModel : BaseModel
     {
-        private  Guid id;
+        private Guid id;
 
         public override Guid Id
         {
@@ -60,27 +61,45 @@ namespace OptimizedTreeView.Models
             }
         }
 
+        private TreeNodeType nodeType;
+
+        public TreeNodeType NodeType
+        {
+            get => nodeType;
+            set
+            {
+                nodeType = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public TreeViewModel Parent { get; set; }
 
         public ObservableCollection<TreeViewModel> Children { get; set; } = new ObservableCollection<TreeViewModel>();
 
         public static TreeViewModel CreateModel()
         {
-            TreeViewModel tree = new TreeViewModel();
+            TreeViewModel tree = new TreeViewModel()
+            {
+                Name="哈哈哈"
+            };
             for (int i = 0; i < 3; i++)
             {
                 TreeViewModel treeViewModel = new TreeViewModel()
                 {
                     Id = Guid.NewGuid(),
-                    Name = $"{i}"
+                    Name = $"{i}",
+                    NodeType = TreeNodeType.Root
                 };
                 for (int j = 0; j < 5; j++)
                 {
                     treeViewModel.Children.Add(new TreeViewModel()
                     {
-                        Id= Guid.NewGuid(),
+                        Id = Guid.NewGuid(),
                         Name = $"{i}_{j}",
-                        Parent = treeViewModel
+                        Parent = treeViewModel,
+                        NodeType = TreeNodeType.Children
                     });
                 }
                 tree.Children.Add(treeViewModel);
