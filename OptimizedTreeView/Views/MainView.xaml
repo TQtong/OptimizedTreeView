@@ -125,7 +125,7 @@
             </i:Interaction.Behaviors>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <Grid>
+                    <Grid DragEnter="Grid_DragEnter" DragLeave="Grid_DragLeave" DragOver="Grid_DragOver">
                         <TextBox
                             x:Name="textBox"
                             Text="{Binding Name}"

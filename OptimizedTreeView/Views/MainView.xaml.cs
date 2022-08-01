@@ -28,5 +28,22 @@ namespace OptimizedTreeView.Views
             InitializeComponent();
             this.DataContext = new MainViewModel(new TreeViewManager());
         }
+
+        private void Grid_DragEnter(object sender, DragEventArgs e)
+        {
+            (sender as Grid).Background = Brushes.Red;
+        }
+
+        private void Grid_DragLeave(object sender, DragEventArgs e)
+        {
+            Grid grid = sender as Grid;
+
+            grid.Background = Brushes.Transparent;
+        }
+
+        private void Grid_DragOver(object sender, DragEventArgs e)
+        {
+
+        }
     }
 }
