@@ -17,6 +17,7 @@
     <Window.Resources>
 
         <convert:TreeViewLineConverter x:Key="LineConverter" />
+        <convert:VisibilityToVisibilityConverter x:Key="VisibilityConverter"/>
 
         <ContextMenu x:Key="menu">
             <MenuItem
@@ -129,7 +130,7 @@
                                     CommandParameter="{Binding ElementName=textBox, Path=Text}" />
                             </TextBox.InputBindings>
                         </TextBox>
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Name}" Visibility="{Binding IsTextBoxVisibility, Converter={StaticResource VisibilityConverter}}"/>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
