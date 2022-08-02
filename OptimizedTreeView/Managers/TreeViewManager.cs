@@ -86,6 +86,18 @@ namespace OptimizedTreeView.Managers
 
         public void Search(string str)
         {
+            if (str == "" || str == null)
+            {
+                CurrentTree.Children.ToList().ForEach(x =>
+                {
+                    x.BFSTraverseTree((item) =>
+                    {
+                        item.IsNodeVisibility = System.Windows.Visibility.Visible;
+                    });
+                });
+                return;
+            }
+
             CurrentTree.Children.ToList().ForEach(x =>
             {
                 x.BFSTraverseTree((item) =>
@@ -101,6 +113,7 @@ namespace OptimizedTreeView.Managers
                     }
                 });
             });
+
         }
 
         public void Select(object obj)
@@ -154,6 +167,7 @@ namespace OptimizedTreeView.Managers
             if (model.Parent != null)
             {
                 model.Parent.IsNodeVisibility = System.Windows.Visibility.Visible;
+                model.IsNodeVisibility = System.Windows.Visibility.Visible;
                 ShowSearchResult(model.Parent);
             }
             else
